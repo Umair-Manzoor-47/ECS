@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <cstddef>
 #include <new>
+#include <cassert>
+
 namespace ecs {
     class ComponentColumn {
     public:
@@ -83,6 +85,29 @@ namespace ecs {
             };
 
             return col;
+        }
+
+        void* GetRow(const size_t row) const {
+            assert(row < m_count && "GetRow: row out of bounds");
+            return m_data + (row * m_elementSize);
+        }
+
+        void SwapAndPop(const size_t row) {
+            assert(row < m_count && "SwapAndPop: row out of bounds");
+
+            void* dst = m_data + (row * m_elementSize);
+            void* src = m_data + ((m_count - 1) * m_elementSize);
+
+            if (row == m_count - 1) {
+                m_destroy(dst);
+                --m_count;
+                return;
+            }
+
+            m_destroy(dst);
+            m_moveConstruct(dst, src);
+            m_destroy(src);
+            --m_count;
         }
 
 
