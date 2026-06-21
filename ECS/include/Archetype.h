@@ -30,12 +30,13 @@ namespace ecs {
         }
 
         template<typename... Components>
-        void PushBack(Components&&... components) {
+        void PushBack(uint32_t entityID, Components&&... components) {
             assert(sizeof...(Components) == m_columns.size()
                 && "PushBack component count must match archetype column count");
 
             (m_columns.at(ComponentID::get<Components>())
                 .PushBack(std::forward<Components>(components)), ...);
+            m_entityIDs.push_back(entityID);
             ++m_rowCount;
         }
 
@@ -44,6 +45,9 @@ namespace ecs {
             for (auto& [id, column] : m_columns) {
                 column.SwapAndPop(row);
             }
+
+            m_entityIDs[row] = m_entityIDs[m_rowCount - 1];
+            m_entityIDs.pop_back();
             --m_rowCount;
         }
         size_t GetRowCount() const { return m_rowCount; }
@@ -56,9 +60,22 @@ namespace ecs {
             return *static_cast<Component*>(ptr);
         }
 
+        bool IsEmpty() const {
+            return m_columns.empty();
+        }
+
+        uint32_t GetEntityID(const size_t row) const {
+            assert(row < m_rowCount && "GetEntityID: row out of bounds");
+            return m_entityIDs[row];
+        }
+
+        
+
+
     private:
         Signature m_signature;
         size_t m_rowCount = 0;
+        std::vector<uint32_t> m_entityIDs;
         /// [ComponentColumn] is mapped against [ComponentID]
         std::unordered_map<uint32_t, ComponentColumn> m_columns;
     };
