@@ -57,6 +57,26 @@ namespace ecs {
             return record.archetype->GetComponent<Component>(record.row);
         }
 
+        /// 1. m_archetypeRegistry.GetArchetypes() — iterate all archetypes
+        /// 2. std::includes — check if archetype matches query
+        /// 3. archetype.GetRowCount() — how many rows to iterate
+        /// 4. archetype.GetComponent<T>(row) — get component reference per row
+
+        template<typename... Components, typename Func>
+        void Query(Func&& func) {
+            Signature querySig = { ComponentID::get<Components>()... };
+            std::ranges::sort(querySig);
+
+            for (auto& [sig, arch] : m_archetypeRegistry.GetArchetypes()) {
+                if (!std::ranges::includes(sig, querySig)) {
+                    continue;
+                                   }
+                for (size_t row = 0; row < arch.GetRowCount(); ++row) {
+                    func(arch.GetComponent<Components>(row)...);
+                }
+            }
+        }
+
     private:
         ArchetypeRegistry m_archetypeRegistry;
         EntityRegistry m_entityRegistry;

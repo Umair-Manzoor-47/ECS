@@ -22,6 +22,7 @@ namespace ecs {
             auto [newIt, success] = m_archetypes.emplace(sig, Archetype(sig));
             return newIt->second;
         }
+        const std::unordered_map<Signature, Archetype, SignatureHasher>& GetArchetypes() const { return m_archetypes; }
     private:
         std::unordered_map<Signature, Archetype, SignatureHasher> m_archetypes;
 

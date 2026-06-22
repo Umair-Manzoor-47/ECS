@@ -53,7 +53,7 @@ namespace ecs {
         size_t GetRowCount() const { return m_rowCount; }
 
         template<typename Component>
-        Component& GetComponent(size_t row) {
+        Component& GetComponent(size_t row) const {
             uint32_t id = ComponentID::get<Component>();
             assert(m_columns.contains(id) && "Archetype does not have this component");
             void* ptr = m_columns.at(id).GetRow(row);
@@ -69,7 +69,7 @@ namespace ecs {
             return m_entityIDs[row];
         }
 
-        
+
 
 
     private:

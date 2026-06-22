@@ -38,6 +38,7 @@ void TestComponentID();
 void TestComponentColumn();
 void TestArchetype();
 void TestWorld();
+void TestQuery();
 
 // ─────────────────────────────────────────────
 
@@ -53,6 +54,9 @@ int main() {
 
     std::cout << "\n=== World ===\n";
     TestWorld();
+
+    std::cout << "\n=== TestQuery ===\n";
+    TestQuery();
 
     PrintSummary();
     return s_failed > 0 ? 1 : 0; // non-zero exit code on failure
@@ -189,4 +193,26 @@ void TestWorld() {
     world2.AddComponents(b, Transform{1, 1}, Velocity{1, 1});
     world2.DestroyEntity(a);
     EXPECT_EQ(world2.GetComponent<Transform>(b).x, 1.0f, "Isolated world: b intact after a destroyed")
+}
+
+void TestQuery() {
+    ecs::World world;
+
+    auto e1 = world.CreateEntity();
+    auto e2 = world.CreateEntity();
+    auto e3 = world.CreateEntity();
+
+    world.AddComponents(e1, Transform{1, 2}, Velocity{3, 4});
+    world.AddComponents(e2, Transform{5, 6}, Velocity{7, 8});
+    world.AddComponents(e3, Transform{9, 10}, Velocity{11, 12});
+
+    // move all entities
+    world.Query<Transform, Velocity>([](Transform& t, Velocity& v) {
+        t.x += v.vx;
+        t.y += v.vy;
+    });
+
+    EXPECT_EQ(world.GetComponent<Transform>(e1).x, 4.0f,  "Query moved e1 x: 1+3=4")
+    EXPECT_EQ(world.GetComponent<Transform>(e2).x, 12.0f, "Query moved e2 x: 5+7=12")
+    EXPECT_EQ(world.GetComponent<Transform>(e3).x, 20.0f, "Query moved e3 x: 9+11=20")
 }
