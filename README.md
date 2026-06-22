@@ -135,13 +135,13 @@ ECS/
 
 ## ECS Storage
 
-* [ ] `Archetype` — parallel column storage and row management
-* [ ] `ArchetypeRegistry` — signature-based archetype lookup and creation
-* [ ] `EntityRegistry` — entity → (archetype, row) mapping
+* [x] `Archetype` — parallel column storage and row management
+* [x] `ArchetypeRegistry` — signature-based archetype lookup and creation
+* [x] `EntityRegistry` — entity → (archetype, row) mapping
 
 ## Public API
 
-* [ ] `World` — user-facing ECS interface
+* [x] `World` — user-facing ECS interface
 * [ ] Basic query system — iterate entities matching component signatures
 * [ ] Integration into the OTTERUS game engine
 
