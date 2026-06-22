@@ -142,9 +142,7 @@ ECS/
 ## Public API
 
 * [x] `World` — user-facing ECS interface
-* [ ] Basic query system — iterate entities matching component signatures
-* [ ] Integration into the OTTERUS game engine
-
+* [x] Basic query system — iterate entities matching component signatures
 
 ---
 
