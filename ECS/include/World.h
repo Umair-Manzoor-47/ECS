@@ -76,7 +76,9 @@ namespace ecs {
                 }
             }
         }
-
+        size_t GetArchetypeCount() const {
+            return m_archetypeRegistry.GetArchetypeCount();
+        }
     private:
         ArchetypeRegistry m_archetypeRegistry;
         EntityRegistry m_entityRegistry;

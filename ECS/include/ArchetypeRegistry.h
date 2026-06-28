@@ -23,6 +23,9 @@ namespace ecs {
             return newIt->second;
         }
         const std::unordered_map<Signature, Archetype, SignatureHasher>& GetArchetypes() const { return m_archetypes; }
+        size_t GetArchetypeCount() const {
+            return m_archetypes.size();
+        }
     private:
         std::unordered_map<Signature, Archetype, SignatureHasher> m_archetypes;
 
